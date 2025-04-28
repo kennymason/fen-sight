@@ -11,7 +11,7 @@ cnn = ChessNN()
 # Parameters
 BATCH_SIZE = 4
 DATA_DIR = 'dataset/'
-NUM_WORKERS = 2 # If running on Windows and get a BrokenPipeError, try setting NUM_WORKERS=0
+NUM_WORKERS = 0 # If running on Windows and get a BrokenPipeError, try setting NUM_WORKERS=0
 EPOCHS = 10
 LEARNING_RATE = 0.001
 
