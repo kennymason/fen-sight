@@ -5,9 +5,6 @@ import torchvision
 import torchvision.transforms as transforms
 from chess_neural_network import ChessNN
 
-# Convolutional Neural Network
-cnn = ChessNN()
-
 # Parameters
 BATCH_SIZE = 4
 DATA_DIR = 'dataset/'
@@ -15,20 +12,19 @@ NUM_WORKERS = 0 # If running on Windows and get a BrokenPipeError, try setting N
 EPOCHS = 10
 LEARNING_RATE = 0.001
 
+# Convolutional Neural Network
+cnn = ChessNN()
+
 # Transforms
 transform = transforms.Compose([
-  transforms.Resize((128, 128)),
-  transforms.ToTensor(),
-  transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+  transforms.Resize((128, 128)), # Resize the image to something nice
+  transforms.ToTensor(), # Converts image to a PyTorch tensor
+  transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)) # Normalize
 ])
 
 # Training image dataset
 trainset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=transform)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
-
-# Testing image dataset
-testset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
 
 # Loss function and optimizer
 criterion = nn.CrossEntropyLoss()
@@ -56,7 +52,7 @@ for epoch in range(EPOCHS):
       print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
       running_loss = 0.0
 
-# === Save the model ===
+# Save the model
 torch.save(cnn.state_dict(), 'model.pth')
 
 print("Finished Training")
