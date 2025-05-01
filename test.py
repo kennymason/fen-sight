@@ -16,6 +16,10 @@ cnn.eval()  # Set the model to evaluation mode
 # Transforms
 transform = transforms.Compose([
     transforms.Resize((128, 128)), # Resize the image to something nice
+    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05), # Slight color shifts
+    transforms.RandomHorizontalFlip(p=0.5), # Randomly flip images
+    transforms.RandomRotation(15), # Random small rotation (-15 to +15 degrees)
+    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)), # Small random shifts
     transforms.ToTensor(), # Converts the image to a PyTorch tensor
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)) # Normalize
 ])
