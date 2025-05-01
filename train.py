@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
+from torch.utils.data import ConcatDataset
 from chess_neural_network import ChessNN
 
 # Parameters
@@ -22,9 +23,22 @@ transform = transforms.Compose([
   transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)) # Normalize
 ])
 
+augmented_transform = transforms.Compose([
+  transforms.Resize((128, 128)), # Resize the image to something nice
+  transforms.RandomHorizontalFlip(),
+  transforms.RandomRotation(15),
+  transforms.RandomAffine(degrees=10, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+  transforms.ToTensor(), # Converts image to a PyTorch tensor
+  transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)) # Normalize
+])
+
 # Training image dataset
 trainset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
+
+aug_trainset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=augmented_transform)
+
+concat_trainset = ConcatDataset([trainset, aug_trainset])
+trainloader = torch.utils.data.DataLoader(concat_trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
 
 # Loss function and optimizer
 criterion = nn.CrossEntropyLoss()
