@@ -12,7 +12,7 @@ transform = transforms.Compose([
     transforms.ToTensor(),  # No normalization here
 ])
 
-dataset = datasets.ImageFolder("dataset", transform=transform)
+dataset = datasets.ImageFolder("dataset/train", transform=transform)
 loader = DataLoader(dataset, batch_size=64, shuffle=False, num_workers=0)
 
 mean = 0.
