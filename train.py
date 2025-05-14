@@ -34,6 +34,7 @@ augmented_transform = transforms.Compose([
 
 # Training image dataset
 trainset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=transform)
+# trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
 
 aug_trainset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=augmented_transform)
 
