@@ -5,6 +5,8 @@
 import torch
 import torchvision
 import torchvision.transforms as transforms
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from chess_neural_network import ChessNN
 from config import TEST_DATA_DIR, MODEL_PATH, MEAN, STD, RESIZE_DIM, BATCH_SIZE, NUM_WORKERS
 
@@ -29,17 +31,42 @@ testset = torchvision.datasets.ImageFolder(root=TEST_DATA_DIR, transform=transfo
 testloader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
 
 # Testing
+all_preds = []
+all_labels = []
 correct = 0
 total = 0
 
-# No gradient tracking needed for evaluation
 with torch.no_grad():
   for data in testloader:
     images, labels = data
     outputs = cnn(images)
-    _, predicted = torch.max(outputs.data, 1)  # get the index of the max log-probability
+    _, predicted = torch.max(outputs.data, 1) # get the index of the max log-probability
+
+    all_preds.extend(predicted.cpu().numpy())
+    all_labels.extend(labels.cpu().numpy())
+    
     total += labels.size(0)
     correct += (predicted == labels).sum().item()
 
+# Build the confusion matrix
+cm = confusion_matrix(all_labels, all_preds)
+class_names = testset.classes  # Automatically gets class folder names from ImageFolder
+
+# Plot it
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
+disp.plot(xticks_rotation=90, cmap="Blues")
+plt.title("Confusion Matrix on Test Set")
+plt.tight_layout()
+plt.show()
+
+# Normalized Confusion Matrix - Shows proportions
+cm_normalized = confusion_matrix(all_labels, all_preds, normalize='true')
+disp = ConfusionMatrixDisplay(confusion_matrix=cm_normalized, display_labels=class_names)
+disp.plot(xticks_rotation=90, cmap="Blues")
+plt.title("Normalized Confusion Matrix")
+plt.tight_layout()
+plt.show()
+
+# Accuracy
 accuracy = 100 * correct / total
 print(f'Accuracy on the test set: {accuracy:.2f}%')
