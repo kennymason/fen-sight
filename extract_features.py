@@ -22,28 +22,28 @@ cnn.eval()
 
 # Modify the model to stop at the 128-dimensional layer
 class FeatureExtractor(torch.nn.Module):
-    def __init__(self, base_model):
-        super().__init__()
-        self.features = torch.nn.Sequential(
-            base_model.conv1,
-            base_model.pool,
-            base_model.conv2,
-            base_model.pool,
-            torch.nn.Flatten(),
-            base_model.fc1,
-            base_model.fc2  # Output is 128D here
-        )
+  def __init__(self, base_model):
+    super().__init__()
+    self.features = torch.nn.Sequential(
+      base_model.conv1,
+      base_model.pool,
+      base_model.conv2,
+      base_model.pool,
+      torch.nn.Flatten(),
+      base_model.fc1,
+      base_model.fc2  # Output is 128D here
+    )
 
-    def forward(self, x):
-        return self.features(x)
+  def forward(self, x):
+    return self.features(x)
 
 extractor = FeatureExtractor(cnn).to(DEVICE)
 
 # Transform
 transform = transforms.Compose([
-    transforms.Resize(RESIZE_DIM),
-    transforms.ToTensor(),
-    transforms.Normalize(MEAN, STD)
+  transforms.Resize(RESIZE_DIM),
+  transforms.ToTensor(),
+  transforms.Normalize(MEAN, STD)
 ])
 
 # Dataset
@@ -55,11 +55,11 @@ all_features = []
 all_labels = []
 
 with torch.no_grad():
-    for inputs, labels in loader:
-        inputs = inputs.to(DEVICE)
-        features = extractor(inputs)
-        all_features.append(features.cpu().numpy())
-        all_labels.append(labels.cpu().numpy())
+  for inputs, labels in loader:
+    inputs = inputs.to(DEVICE)
+    features = extractor(inputs)
+    all_features.append(features.cpu().numpy())
+    all_labels.append(labels.cpu().numpy())
 
 # Stack and save
 features = np.vstack(all_features)

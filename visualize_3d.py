@@ -26,9 +26,9 @@ class_names = dataset.classes
 # Create colormap and legend
 cmap = plt.cm.get_cmap('tab20', len(class_names))
 legend_elements = [
-    Line2D([0], [0], marker='o', color='w', label=class_names[i],
-      markerfacecolor=cmap(i), markersize=6)
-    for i in range(len(class_names))
+  Line2D([0], [0], marker='o', color='w', label=class_names[i],
+    markerfacecolor=cmap(i), markersize=6)
+  for i in range(len(class_names))
 ]
 
 ## PCA 3D ##
@@ -46,15 +46,15 @@ plt.show()
 ## LDA 3D ##
 num_classes = len(np.unique(labels))
 if num_classes >= 4:
-    lda = LDA(n_components=3)
-    lda_result = lda.fit_transform(features_scaled, labels)
+  lda = LDA(n_components=3)
+  lda_result = lda.fit_transform(features_scaled, labels)
 
-    fig = plt.figure(figsize=(10, 7))
-    ax = fig.add_subplot(111, projection='3d')
-    ax.set_title("LDA Projection (3D)")
-    ax.scatter(lda_result[:, 0], lda_result[:, 1], lda_result[:, 2], c=labels, cmap='tab20', s=10)
-    ax.legend(handles=legend_elements, title="Classes", bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.tight_layout()
-    plt.show()
+  fig = plt.figure(figsize=(10, 7))
+  ax = fig.add_subplot(111, projection='3d')
+  ax.set_title("LDA Projection (3D)")
+  ax.scatter(lda_result[:, 0], lda_result[:, 1], lda_result[:, 2], c=labels, cmap='tab20', s=10)
+  ax.legend(handles=legend_elements, title="Classes", bbox_to_anchor=(1.05, 1), loc='upper left')
+  plt.tight_layout()
+  plt.show()
 else:
-    print(f"LDA requires at least 4 classes for a 3D plot, but only {num_classes} were found.")
+  print(f"LDA requires at least 4 classes for a 3D plot, but only {num_classes} were found.")

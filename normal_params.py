@@ -9,8 +9,8 @@ from config import TRAIN_DATA_DIR, RESIZE_DIM, BATCH_SIZE, NUM_WORKERS
 
 # Load training dataset without normalization
 transform = transforms.Compose([
-    transforms.Resize(RESIZE_DIM),
-    transforms.ToTensor(),  # No normalization here
+  transforms.Resize(RESIZE_DIM),
+  transforms.ToTensor(),  # No normalization here
 ])
 
 dataset = datasets.ImageFolder(TRAIN_DATA_DIR, transform=transform)
@@ -21,11 +21,11 @@ std = 0.
 num_samples = 0.
 
 for data, _ in loader:
-    batch_samples = data.size(0)
-    data = data.view(batch_samples, data.size(1), -1)  # flatten H and W: (batch_size, 3, H, W) to (batch_size, 3, H*W)
-    mean += data.mean(2).sum(0)
-    std += data.std(2).sum(0)
-    num_samples += batch_samples
+  batch_samples = data.size(0)
+  data = data.view(batch_samples, data.size(1), -1)  # flatten H and W: (batch_size, 3, H, W) to (batch_size, 3, H*W)
+  mean += data.mean(2).sum(0)
+  std += data.std(2).sum(0)
+  num_samples += batch_samples
 
 mean /= num_samples
 std /= num_samples

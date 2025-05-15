@@ -26,9 +26,9 @@ class_names = dataset.classes
 # Custom legend
 cmap = plt.cm.get_cmap('tab20', len(class_names)) # Colormap
 legend_elements = [
-    Line2D([0], [0], marker='o', color='w', label=class_names[i],
-      markerfacecolor=cmap(i), markersize=6)
-    for i in np.unique(labels)
+  Line2D([0], [0], marker='o', color='w', label=class_names[i],
+    markerfacecolor=cmap(i), markersize=6)
+  for i in np.unique(labels)
 ]
 
 ## PCA ##

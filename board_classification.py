@@ -19,9 +19,9 @@ cnn.eval()  # Set the model to evaluation mode
 
 # Transforms
 transform = transforms.Compose([
-    transforms.Resize(RESIZE_DIM), # Resize the image to something nice
-    transforms.ToTensor(), # Converts the image to a PyTorch tensor
-    transforms.Normalize(MEAN, STD) # Normalize
+  transforms.Resize(RESIZE_DIM), # Resize the image to something nice
+  transforms.ToTensor(), # Converts the image to a PyTorch tensor
+  transforms.Normalize(MEAN, STD) # Normalize
 ])
 
 # Sorted class names can be looked up using model indices
