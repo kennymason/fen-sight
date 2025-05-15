@@ -1,6 +1,6 @@
 # bhattacharrya.py
 # Kenneth Mason
-# Calculates the Bhattacharyya error bounds
+# Calculates the Bhattacharyya distances between class distributions
 
 import numpy as np
 from sklearn.decomposition import PCA
@@ -8,8 +8,6 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.preprocessing import StandardScaler
 from torchvision import datasets
 from itertools import combinations
-import matplotlib.pyplot as plt
-from numpy.linalg import inv, det
 from config import TRAIN_DATA_DIR
 
 # Load and scale
@@ -31,12 +29,22 @@ def bhattacharyya_distance(class1_data, class2_data):
   cov_avg = 0.5 * (cov1 + cov2)
 
   mean_diff = mu1 - mu2
-
-  # Use pseudo-inverse to handle singular matrices
   cov_avg_inv = np.linalg.pinv(cov_avg)
 
   term1 = 0.125 * mean_diff.T @ cov_avg_inv @ mean_diff
-  term2 = 0.5 * np.log(det(cov_avg) / (np.sqrt(det(cov1) * det(cov2)) + 1e-8) + 1e-8)
+
+  # Use slogdet for better numerical stability
+  sign_avg, logdet_avg = np.linalg.slogdet(cov_avg)
+  sign1, logdet1 = np.linalg.slogdet(cov1)
+  sign2, logdet2 = np.linalg.slogdet(cov2)
+
+  # Check for non-positive determinants
+  if sign_avg <= 0 or sign1 <= 0 or sign2 <= 0:
+    # Handle singular covariance matrices gracefully, e.g. skip or assign large distance
+    # or add a small regularization term (like 1e-6*I) to covariance matrices beforehand
+    return np.inf  # or some large number
+
+  term2 = 0.5 * (logdet_avg - 0.5 * (logdet1 + logdet2))
 
   return term1 + term2
 
