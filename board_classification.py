@@ -4,61 +4,28 @@
 # FEN is a standard notation for describing a chess position in ASCII text
 
 from PIL import Image
-import os
 import sys
 import torch
-import torchvision
 import torchvision.transforms as transforms
 from chess_neural_network import ChessNN
+from config import MODEL_PATH, MEAN, STD, RESIZE_DIM, CLASS_TO_FEN
 
 ## SETUP ##
 
 # Load the model
 cnn = ChessNN()
-cnn.load_state_dict(torch.load('model.pth'))
+cnn.load_state_dict(torch.load(MODEL_PATH))
 cnn.eval()  # Set the model to evaluation mode
 
 # Transforms
 transform = transforms.Compose([
-    transforms.Resize((128, 128)), # Resize the image to something nice
+    transforms.Resize(RESIZE_DIM), # Resize the image to something nice
     transforms.ToTensor(), # Converts the image to a PyTorch tensor
-    transforms.Normalize((0.3954, 0.3891, 0.3873), (0.2244, 0.2218, 0.2180)) # Normalize
+    transforms.Normalize(MEAN, STD) # Normalize
 ])
 
-# Mapping from class to FEN id
-class_to_fen = {
-    "wp": "P",
-    "bp": "p",
-    "wn": "N",
-    "bn": "n",
-    "wb": "B",
-    "bb": "b",
-    "wr": "R",
-    "br": "r",
-    "wq": "Q",
-    "bq": "q",
-    "wk": "K",
-    "bk": "k",
-    "empty": "1",
-}
-# class_to_fen = {
-#     "white_pawn_light": "P", "white_pawn_dark": "P",
-#     "black_pawn_light": "p", "black_pawn_dark": "p",
-#     "white_knight_light": "N", "white_knight_dark": "N",
-#     "black_knight_light": "n", "black_knight_dark": "n",
-#     "white_bishop_light": "B", "white_bishop_dark": "B",
-#     "black_bishop_light": "b", "black_bishop_dark": "b",
-#     "white_rook_light": "R", "white_rook_dark": "R",
-#     "black_rook_light": "r", "black_rook_dark": "r",
-#     "white_queen_light": "Q", "white_queen_dark": "Q",
-#     "black_queen_light": "q", "black_queen_dark": "q",
-#     "white_king_light": "K", "white_king_dark": "K",
-#     "black_king_light": "k", "black_king_dark": "k",
-#     "empty_square_light": "1", "empty_square_dark": "1",
-# }
-
 # Sorted class names can be looked up using model indices
-class_names = sorted(class_to_fen.keys())
+class_names = sorted(CLASS_TO_FEN.keys())
 
 ## FUNCTIONS ##
 
@@ -112,7 +79,7 @@ def fen_generator(class_indices):
       # Get the class name of the current square
       predicted_class = class_names[class_index]
       # Get FEN character based on class
-      fen_value = class_to_fen[predicted_class]
+      fen_value = CLASS_TO_FEN[predicted_class]
 
       # Check if square is classified as an empty square or a piece
       if fen_value == "1":

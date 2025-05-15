@@ -5,15 +5,16 @@
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
+from config import TRAIN_DATA_DIR, RESIZE_DIM, BATCH_SIZE, NUM_WORKERS
 
 # Load training dataset without normalization
 transform = transforms.Compose([
-    transforms.Resize((128, 128)),
+    transforms.Resize(RESIZE_DIM),
     transforms.ToTensor(),  # No normalization here
 ])
 
-dataset = datasets.ImageFolder("dataset/train", transform=transform)
-loader = DataLoader(dataset, batch_size=64, shuffle=False, num_workers=0)
+dataset = datasets.ImageFolder(TRAIN_DATA_DIR, transform=transform)
+loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
 
 mean = 0.
 std = 0.

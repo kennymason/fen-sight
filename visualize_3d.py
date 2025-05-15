@@ -9,17 +9,18 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import numpy as np
 from torchvision import datasets
+from config import TRAIN_DATA_DIR
 
 # Load features and labels
-features_np = np.load('features.npy')
-labels_np = np.load('labels.npy')
+features = np.load('features.npy')
+labels = np.load('labels.npy')
 
 # Normalize features before applying PCA/LDA
 scaler = StandardScaler()
-features_scaled = scaler.fit_transform(features_np)
+features_scaled = scaler.fit_transform(features)
 
 # Get dict of class names
-dataset = datasets.ImageFolder(root='dataset/train')
+dataset = datasets.ImageFolder(root=TRAIN_DATA_DIR)
 class_names = dataset.classes
 
 # Create colormap and legend
@@ -37,21 +38,21 @@ pca_result = pca.fit_transform(features_scaled)
 fig = plt.figure(figsize=(10, 7))
 ax = fig.add_subplot(111, projection='3d')
 ax.set_title("PCA Projection (3D)")
-ax.scatter(pca_result[:, 0], pca_result[:, 1], pca_result[:, 2], c=labels_np, cmap='tab20', s=10)
+ax.scatter(pca_result[:, 0], pca_result[:, 1], pca_result[:, 2], c=labels, cmap='tab20', s=10)
 ax.legend(handles=legend_elements, title="Classes", bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.tight_layout()
 plt.show()
 
 ## LDA 3D ##
-num_classes = len(np.unique(labels_np))
+num_classes = len(np.unique(labels))
 if num_classes >= 4:
     lda = LDA(n_components=3)
-    lda_result = lda.fit_transform(features_scaled, labels_np)
+    lda_result = lda.fit_transform(features_scaled, labels)
 
     fig = plt.figure(figsize=(10, 7))
     ax = fig.add_subplot(111, projection='3d')
     ax.set_title("LDA Projection (3D)")
-    ax.scatter(lda_result[:, 0], lda_result[:, 1], lda_result[:, 2], c=labels_np, cmap='tab20', s=10)
+    ax.scatter(lda_result[:, 0], lda_result[:, 1], lda_result[:, 2], c=labels, cmap='tab20', s=10)
     ax.legend(handles=legend_elements, title="Classes", bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.tight_layout()
     plt.show()

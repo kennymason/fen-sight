@@ -9,6 +9,7 @@ from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.preprocessing import StandardScaler
 from torchvision import datasets
+from config import TRAIN_DATA_DIR
 
 # Load features and labels
 features = np.load('features.npy')
@@ -19,7 +20,7 @@ scaler = StandardScaler()
 features_scaled = scaler.fit_transform(features)
 
 # Get dict of class names
-dataset = datasets.ImageFolder(root='dataset/train')
+dataset = datasets.ImageFolder(root=TRAIN_DATA_DIR)
 class_names = dataset.classes
 
 # Custom legend

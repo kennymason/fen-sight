@@ -6,30 +6,26 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 from chess_neural_network import ChessNN
-
-# Parameters
-BATCH_SIZE = 4
-DATA_DIR = 'dataset/train/'  # Same as during training
-NUM_WORKERS = 0
+from config import TEST_DATA_DIR, MODEL_PATH, MEAN, STD, RESIZE_DIM, BATCH_SIZE, NUM_WORKERS
 
 # Load the model
 cnn = ChessNN()
-cnn.load_state_dict(torch.load('model.pth'))
+cnn.load_state_dict(torch.load(MODEL_PATH))
 cnn.eval()  # Set the model to evaluation mode
 
 # Transforms
 transform = transforms.Compose([
-    transforms.Resize((128, 128)), # Resize the image to something nice
+    transforms.Resize(RESIZE_DIM), # Resize the image to something nice
     # transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05), # Slight color shifts
     # transforms.RandomHorizontalFlip(p=0.5), # Randomly flip images
     # transforms.RandomRotation(15), # Random small rotation (-15 to +15 degrees)
     # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)), # Small random shifts
     transforms.ToTensor(), # Converts the image to a PyTorch tensor
-    transforms.Normalize((0.3954, 0.3891, 0.3873), (0.2244, 0.2218, 0.2180)) # Normalize
+    transforms.Normalize(MEAN, STD) # Normalize
 ])
 
 # Load the test dataset
-testset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=transform)
+testset = torchvision.datasets.ImageFolder(root=TEST_DATA_DIR, transform=transform)
 testloader = torch.utils.data.DataLoader(testset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
 
 # Testing

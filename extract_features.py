@@ -8,14 +8,10 @@ import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 import numpy as np
 from chess_neural_network import ChessNN
-import os
+from config import TRAIN_DATA_DIR, MODEL_PATH, MEAN, STD, RESIZE_DIM, BATCH_SIZE, NUM_WORKERS
 
-# Parameters
-BATCH_SIZE = 32
-DATA_DIR = 'dataset/train'
-MODEL_PATH = 'model.pth'
-NUM_WORKERS = 0
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu") # Uses GPU if available, otherwise CPU
+# Uses GPU if available, otherwise CPU
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
 
 # Load model
 cnn = ChessNN()
@@ -45,13 +41,13 @@ extractor = FeatureExtractor(cnn).to(DEVICE)
 
 # Transform
 transform = transforms.Compose([
-    transforms.Resize((128, 128)),
+    transforms.Resize(RESIZE_DIM),
     transforms.ToTensor(),
-    transforms.Normalize((0.3954, 0.3891, 0.3873), (0.2244, 0.2218, 0.2180))
+    transforms.Normalize(MEAN, STD)
 ])
 
 # Dataset
-dataset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=transform)
+dataset = torchvision.datasets.ImageFolder(root=TRAIN_DATA_DIR, transform=transform)
 loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=NUM_WORKERS)
 
 # Extract features
@@ -66,10 +62,10 @@ with torch.no_grad():
         all_labels.append(labels.cpu().numpy())
 
 # Stack and save
-features_np = np.vstack(all_features)
-labels_np = np.hstack(all_labels)
+features = np.vstack(all_features)
+labels = np.hstack(all_labels)
 
-np.save('features.npy', features_np)
-np.save('labels.npy', labels_np)
+np.save('features.npy', features)
+np.save('labels.npy', labels)
 
 print("Feature extraction complete.")

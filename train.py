@@ -8,26 +8,20 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 from chess_neural_network import ChessNN
-
-# Parameters
-BATCH_SIZE = 32
-DATA_DIR = 'dataset/train'
-NUM_WORKERS = 0 # Setting NUM_WORKERS higher than 0 will cause errors on some machines
-EPOCHS = 10
-LEARNING_RATE = 0.001
+from config import TRAIN_DATA_DIR, MODEL_PATH, MEAN, STD, RESIZE_DIM, BATCH_SIZE, NUM_WORKERS, EPOCHS, LEARNING_RATE
 
 # Convolutional Neural Network
 cnn = ChessNN()
 
 # Transforms
 transform = transforms.Compose([
-  transforms.Resize((128, 128)), # Resize the image to something nice
+  transforms.Resize(RESIZE_DIM), # Resize the image to something nice
   transforms.ToTensor(), # Converts image to a PyTorch tensor
-  transforms.Normalize((0.3954, 0.3891, 0.3873), (0.2244, 0.2218, 0.2180)) # Normalize using calculated parameters
+  transforms.Normalize(MEAN, STD) # Normalize using calculated parameters
 ])
 
 # Load the training image dataset
-trainset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=transform)
+trainset = torchvision.datasets.ImageFolder(root=TRAIN_DATA_DIR, transform=transform)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
 
 # Loss function and optimizer
@@ -57,6 +51,6 @@ for epoch in range(EPOCHS):
       running_loss = 0.0
 
 # Save the model
-torch.save(cnn.state_dict(), 'model.pth')
+torch.save(cnn.state_dict(), MODEL_PATH)
 
 print("Finished Training")
