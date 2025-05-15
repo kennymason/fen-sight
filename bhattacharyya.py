@@ -8,6 +8,8 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.preprocessing import StandardScaler
 from torchvision import datasets
 from itertools import combinations
+import matplotlib.pyplot as plt
+import seaborn as sns
 from config import TRAIN_DATA_DIR
 
 # Load and scale
@@ -21,6 +23,7 @@ dataset = datasets.ImageFolder(root=TRAIN_DATA_DIR)
 class_names = dataset.classes
 class_pairs = list(combinations(np.unique(labels), 2))  # all pairwise combinations
 
+# Calculate the bhattacharyya distance
 def bhattacharyya_distance(class1_data, class2_data):
   mu1 = np.mean(class1_data, axis=0)
   mu2 = np.mean(class2_data, axis=0)
@@ -60,6 +63,21 @@ def compute_distances(projected_features, labels, method_name):
     print(f"{class_names[i]} vs {class_names[j]}: {dist:.4f}")
   return distances
 
+def plot_distance_heatmap(distances, class_names, method_name, vmax=None):
+  n = len(class_names)
+  matrix = np.full((n, n), np.nan)
+
+  for (i, j), dist in distances.items():
+    matrix[i, j] = dist
+    matrix[j, i] = dist
+
+  plt.figure(figsize=(10, 8))
+  sns.heatmap(matrix, xticklabels=class_names, yticklabels=class_names,
+    annot=True, fmt=".2f", cmap="viridis", mask=np.isnan(matrix), vmax=vmax)
+  plt.title(f"Bhattacharyya Distance Heatmap ({method_name})")
+  plt.tight_layout()
+  plt.show()
+
 # PCA projection
 # Use enough components to explain 99% of variance
 pca = PCA(n_components=0.99)
@@ -75,3 +93,10 @@ if num_classes >= 2:
   lda_distances = compute_distances(lda_proj, labels, "LDA")
 else:
   print("Not enough classes for LDA")
+
+# Plot Heatmap
+# 'empty' class heavily skews heatmap; added vmax as an optional argument for plot_distance_heatmap()
+# vmax=20 sets a max threshold for weighing Bhattacharyya distances, making visualization of other classes more obvious
+plot_distance_heatmap(pca_distances, class_names, "PCA", 20)
+if num_classes >= 2:
+  plot_distance_heatmap(lda_distances, class_names, "LDA", 20)
