@@ -25,6 +25,9 @@ pip-wheel-metadata/
 *.pth
 *.pt
 
+# NumPy files
+*.npy
+
 # MacOS specific files
 .DS_Store
 
