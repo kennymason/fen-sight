@@ -1,15 +1,18 @@
+# train.py
+# Kenneth Mason
+# Trains the "Chess Neural Network" CNN
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
-from torch.utils.data import ConcatDataset
 from chess_neural_network import ChessNN
 
 # Parameters
 BATCH_SIZE = 32
 DATA_DIR = 'dataset/train'
-NUM_WORKERS = 0 # If running on Windows and get a BrokenPipeError, try setting NUM_WORKERS=0
+NUM_WORKERS = 0 # Setting NUM_WORKERS higher than 0 will cause errors on some machines
 EPOCHS = 10
 LEARNING_RATE = 0.001
 
@@ -20,26 +23,12 @@ cnn = ChessNN()
 transform = transforms.Compose([
   transforms.Resize((128, 128)), # Resize the image to something nice
   transforms.ToTensor(), # Converts image to a PyTorch tensor
-  transforms.Normalize((0.3954, 0.3891, 0.3873), (0.2244, 0.2218, 0.2180)) # Normalize
+  transforms.Normalize((0.3954, 0.3891, 0.3873), (0.2244, 0.2218, 0.2180)) # Normalize using calculated parameters
 ])
 
-# augmented_transform = transforms.Compose([
-#   transforms.Resize((128, 128)), # Resize the image to something nice
-#   transforms.RandomHorizontalFlip(),
-#   transforms.RandomRotation(15),
-#   transforms.RandomAffine(degrees=10, translate=(0.1, 0.1), scale=(0.9, 1.1)),
-#   transforms.ToTensor(), # Converts image to a PyTorch tensor
-#   transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)) # Normalize
-# ])
-
-# Training image dataset
+# Load the training image dataset
 trainset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=transform)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
-
-# aug_trainset = torchvision.datasets.ImageFolder(root=DATA_DIR, transform=augmented_transform)
-
-# concat_trainset = ConcatDataset([trainset, aug_trainset])
-# trainloader = torch.utils.data.DataLoader(concat_trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)
 
 # Loss function and optimizer
 criterion = nn.CrossEntropyLoss()

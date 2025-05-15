@@ -1,3 +1,7 @@
+# test.py
+# Kenneth Mason
+# Tests the trained model, with optional image augmentations
+
 import torch
 import torchvision
 import torchvision.transforms as transforms

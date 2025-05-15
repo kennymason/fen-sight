@@ -1,3 +1,7 @@
+# chess_neural_network.py
+# Kenneth Mason
+# Convolutional Neural Network for classifying chess pieces
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

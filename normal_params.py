@@ -1,5 +1,5 @@
 # normal_params.py
-# Kenneth Mason - 5/8/2025
+# Kenneth Mason
 # Calculates the normalization parameters of a dataset
 
 import torch

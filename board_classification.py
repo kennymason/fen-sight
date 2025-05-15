@@ -1,5 +1,5 @@
 # board_classification.py
-# Kenneth Mason - 5/8/2025
+# Kenneth Mason
 # Takes in a cropped image of a 2D chessboard and produces its FEN record
 # FEN is a standard notation for describing a chess position in ASCII text
 
