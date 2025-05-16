@@ -46,7 +46,7 @@ for epoch in range(EPOCHS):
 
     # print statistics
     running_loss += loss.item()
-    if i % 100 == 99: # print every 2000 mini-batches
+    if i % 100 == 99: # print every n mini-batches
       print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
       running_loss = 0.0
 
