@@ -16,7 +16,7 @@ class ChessNN(nn.Module):
     # Output = (62 - 5 + 0)/1 + 1 = 58 -> (58x58)
     self.fc1 = nn.Linear(64 * 29 * 29, 512) # 64*29*29 size of vector after torch.flatten(), I chose 512 as output size
     self.fc2 = nn.Linear(512, 128) # 512 input size, 128 output size
-    self.fc3 = nn.Linear(128, 26) # 128 input size, 26 output size (we have 26 classes)
+    self.fc3 = nn.Linear(128, 13) # 128 input size, 13 output size (we have 13 classes)
 
   def forward(self, x):
     # Input Size = 128 -> (128px x 128px image)
@@ -33,5 +33,5 @@ class ChessNN(nn.Module):
     x = F.relu(self.fc2(x))
     # Output Size = 128
     x = self.fc3(x)
-    # Output Size = 26 (26 classes)
+    # Output Size = 13 (13 classes)
     return x
